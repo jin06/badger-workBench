@@ -99,12 +99,10 @@ jobs:
         sudo apt-get install -y libgl1-mesa-dev xorg-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libxinerama-dev gcc-aarch64-linux-gnu
 
     - name: Build for Linux (amd64 and arm64)
-      env:
-        CC: aarch64-linux-gnu-gcc
       run: |
         mkdir -p bin
         CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-amd64 .
-        CGO_ENABLED=1 GOOS=linux GOARCH=arm64 CC=aarch64-linux-gnu-gcc go build -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-arm64 .
+        CC=aarch64-linux-gnu-gcc CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-arm64 .
 
   create-release:
     name: Create Release
