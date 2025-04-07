@@ -96,7 +96,14 @@ jobs:
     - name: Install Linux Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y libgl1-mesa-dev xorg-dev libx11-dev libxcursor-dev libxrandr-dev libxi-dev libxinerama-dev gcc-aarch64-linux-gnu
+        sudo apt-get install -y \
+          libgl1-mesa-dev:arm64 \
+          libx11-dev:arm64 \
+          libxcursor-dev:arm64 \
+          libxrandr-dev:arm64 \
+          libxi-dev:arm64 \
+          libxinerama-dev:arm64 \
+          gcc-aarch64-linux-gnu
 
     - name: Build for Linux (amd64 and arm64)
       run: |
