@@ -7,12 +7,15 @@ import (
 )
 
 func main() {
+	// Create a new Fyne application
 	myApp := app.New()
 	myApp.Settings().SetTheme(theme.DarkTheme())
-	myWindow := myApp.NewWindow("BadgerWorkBench")
+	myWindow := myApp.NewWindow("Badger Workbench")
 
+	// Call SetupUI to initialize the UI
 	SetupUI(myWindow)
 
+	// Show and run the application
 	myWindow.Resize(fyne.NewSize(800, 600))
 	myWindow.ShowAndRun()
 }
