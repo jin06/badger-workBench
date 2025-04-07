@@ -39,9 +39,11 @@ jobs:
         CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-darwin-arm64 .
 
     - name: Build for Windows (amd64 and 386)
+      env:
+        CC: x86_64-w64-mingw32-gcc
       run: |
         mkdir -p bin
-        CC=x86_64-w64-mingw32-gcc CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-windows-amd64.exe .
+        CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-windows-amd64.exe .
         CC=i686-w64-mingw32-gcc CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-windows-386.exe .
 
     - name: Build for Linux (amd64 and arm64)
