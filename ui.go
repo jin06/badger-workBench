@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strconv"
 
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/v2"
@@ -16,7 +17,6 @@ func SetupUI(win fyne.Window) {
 	valueDisplay := widget.NewMultiLineEntry()
 	valueDisplay.Wrapping = fyne.TextWrapWord
 	valueDisplay.SetPlaceHolder("🤘 Display Area: Key-Value Content")
-
 	valueDisplay.TextStyle = fyne.TextStyle{Bold: true}
 	valueDisplay.Wrapping = fyne.TextWrapWord
 
@@ -33,6 +33,10 @@ func SetupUI(win fyne.Window) {
 	)
 
 	loadLastOpenedDirectory()
+	// Label to display the opened folder path
+	folderPathLabel := widget.NewLabel("No folder selected")
+	folderPathLabel.Wrapping = fyne.TextWrapWord
+	folderPathLabel.TextStyle = fyne.TextStyle{Bold: true}
 
 	if lastOpenedDir != "" {
 		err := OpenDB(lastOpenedDir)
@@ -42,6 +46,7 @@ func SetupUI(win fyne.Window) {
 			keys, _ = GetAllKeys()
 			refreshKeys(keyList, keys)
 		}
+		folderPathLabel.SetText(lastOpenedDir) // Update the folder path label
 	}
 
 	loadBtn := widget.NewButtonWithIcon("Load Badger 🤘", theme.FolderOpenIcon(), func() {
@@ -64,6 +69,7 @@ func SetupUI(win fyne.Window) {
 			saveLastOpenedDirectory(dir.Path())
 			keys, _ = GetAllKeys()
 			refreshKeys(keyList, keys)
+			folderPathLabel.SetText(dir.Path()) // Update the folder path label
 		}, win)
 	})
 
@@ -72,13 +78,90 @@ func SetupUI(win fyne.Window) {
 		refreshKeys(keyList, keys)
 	})
 
+	keyEntry := widget.NewEntry()
+	keyEntry.SetPlaceHolder("Enter Key")
+
+	ttlEntry := widget.NewEntry()
+	ttlEntry.SetPlaceHolder("Enter TTL (seconds)") // Used to display and set TTL
+
+	valueEntry := widget.NewMultiLineEntry()
+	valueEntry.SetPlaceHolder("Enter Value")
+	keyList.OnSelected = func(id int) {
+		if id >= 0 && id < len(keys) {
+			selectedKey := keys[id]
+			val, err := GetValue(selectedKey)
+			if err != nil {
+				dialog.ShowError(err, win)
+				return
+			}
+			valueDisplay.SetText(val)
+			keyEntry.SetText(selectedKey)
+			valueEntry.SetText(val)
+
+			// Retrieve and display TTL
+			ttl, err := GetKeyTTL(selectedKey)
+			if err != nil {
+				ttlEntry.SetText("Error retrieving TTL")
+			} else {
+				ttlEntry.SetText(fmt.Sprintf("%d", ttl))
+			}
+		}
+	}
+
+	submitBtn := widget.NewButton("Submit", func() {
+		key := keyEntry.Text
+		value := valueEntry.Text
+		ttlText := ttlEntry.Text
+
+		if key == "" {
+			dialog.ShowInformation("Invalid Input", "Key cannot be empty.", win)
+			return
+		}
+
+		var ttl uint64
+		if ttlText != "" {
+			parsedTTL, err := strconv.ParseUint(ttlText, 10, 64)
+			if err != nil {
+				dialog.ShowError(fmt.Errorf("Invalid TTL value"), win)
+				return
+			}
+			ttl = parsedTTL
+		}
+
+		err := SetValueWithTTL(key, value, ttl)
+		if err != nil {
+			dialog.ShowError(err, win)
+		} else {
+			// dialog.ShowInformation("Success", "Key-Value pair added/updated successfully.", win)
+			keys, _ = GetAllKeys()
+			refreshKeys(keyList, keys)
+		}
+	})
+
+	inputForm := container.NewVBox(
+		widget.NewLabel("Add or Update Key-Value"),
+		keyEntry,
+		ttlEntry, // Add TTL input field
+		valueEntry,
+		submitBtn,
+	)
+
 	// Left is the list, right is the value display, middle is resizable
 	split := container.NewHSplit(keyList, valueDisplay)
 	split.Offset = 0.3
 
-	header := container.NewHBox(loadBtn, refreshBtn)
+	// folderPathLabel.Resize(fyne.NewSize(500, folderPathLabel.MinSize().Height)) // Set a minimum width for the label
 
-	ui := container.NewBorder(header, nil, nil, nil, split)
+	folderContainer := container.NewVBox(folderPathLabel)
+	header := container.NewBorder(
+		nil, // No top border
+		nil, // No bottom border
+		nil, // No left border
+		nil,
+		container.NewVBox(container.NewHBox(loadBtn, refreshBtn), folderContainer),
+	)
+
+	ui := container.NewBorder(header, inputForm, nil, nil, split)
 
 	// Set window content
 	win.SetContent(ui)
@@ -86,18 +169,6 @@ func SetupUI(win fyne.Window) {
 	// Set window style
 	win.Resize(fyne.NewSize(1000, 600))
 	win.SetTitle("Badger Workbench")
-
-	keyList.OnSelected = func(id int) {
-		if id >= len(keys) {
-			return
-		}
-		val, err := GetValue(keys[id])
-		if err != nil {
-			dialog.ShowError(err, win)
-			return
-		}
-		valueDisplay.SetText(val)
-	}
 }
 
 var lastOpenedDir string
