@@ -14,17 +14,33 @@ Badger Workbench is a graphical user interface (GUI) application built with [Fyn
 - **View TTL**: Display the remaining TTL for keys.
 - **Dark Theme**: The application uses a dark theme for better readability.
 
-## Prerequisites
-
-- Go 1.18 or later
-- Fyne library (`go get fyne.io/fyne/v2`)
-- BadgerDB library (`go get github.com/dgraph-io/badger/v4`)
-
 ## Installation
+
+### Option 1: Download Precompiled Binaries
+
+1. Go to the [Releases](https://github.com/jin06/badger-workbench/releases) page.
+2. Download the appropriate binary for your platform:
+   - macOS: `BadgerWorkbench-<version>-darwin-amd64` or `BadgerWorkbench-<version>-darwin-arm64`
+   - Windows: `BadgerWorkbench-<version>-windows-amd64.exe` or `BadgerWorkbench-<version>-windows-386.exe`
+   - Linux: `BadgerWorkbench-<version>-linux-amd64` or `BadgerWorkbench-<version>-linux-arm64`
+3. Make the binary executable (if required):
+   - On macOS/Linux:
+     ```bash
+     chmod +x BadgerWorkbench-<version>-<platform>
+     ```
+4. Run the application:
+   - On macOS/Linux:
+     ```bash
+     ./BadgerWorkbench-<version>-<platform>
+     ```
+   - On Windows:
+     Double-click the `.exe` file.
+
+### Option 2: Build from Source
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/your-repo/badger-workbench.git
+   git clone https://github.com/jin06/badger-workbench.git
    cd badger-workbench
    ```
 
@@ -60,11 +76,13 @@ badger-workbench/
 ├── ui.go            # UI setup and event handling
 ├── db.go            # Database operations (BadgerDB)
 ├── README.md        # Project documentation
+├── doc/             # Documentation assets (e.g., screenshots)
 ```
 
 ## Screenshots
 
-![Screenshot](https://via.placeholder.com/800x600?text=Badger+Workbench+Screenshot)
+### Main Interface
+![Main Interface](doc/main-interface.png)
 
 ## License
 
