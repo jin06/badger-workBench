@@ -78,6 +78,22 @@ func SetupUI(win fyne.Window) {
 		refreshKeys(keyList, keys)
 	})
 
+	deleteAllBtn := widget.NewButtonWithIcon("Delete All Keys 🗑️", theme.DeleteIcon(), func() {
+		dialog.ShowConfirm("Delete All Keys", "Are you sure you want to delete all keys?", func(confirmed bool) {
+			if confirmed {
+				for _, key := range keys {
+					err := DeleteKey(key)
+					if err != nil {
+						dialog.ShowError(err, win)
+						return
+					}
+				}
+				keys = []string{} // Clear the keys list
+				refreshKeys(keyList, keys)
+			}
+		}, win)
+	})
+
 	keyEntry := widget.NewEntry()
 	keyEntry.SetPlaceHolder("Enter Key")
 
@@ -138,6 +154,29 @@ func SetupUI(win fyne.Window) {
 		}
 	})
 
+	deleteKeyBtn := widget.NewButtonWithIcon("Delete Selected Key 🗑️", theme.DeleteIcon(), func() {
+		selectedKey := keyEntry.Text
+		if selectedKey == "" {
+			dialog.ShowInformation("No Key Selected", "Please select a key to delete.", win)
+			return
+		}
+		dialog.ShowConfirm("Delete Key", fmt.Sprintf("Are you sure you want to delete the key '%s'?", selectedKey), func(confirmed bool) {
+			if confirmed {
+				err := DeleteKey(selectedKey)
+				if err != nil {
+					dialog.ShowError(err, win)
+					return
+				}
+				keys, _ = GetAllKeys()
+				refreshKeys(keyList, keys)
+				keyEntry.SetText("")     // Clear the key entry
+				valueEntry.SetText("")   // Clear the value entry
+				ttlEntry.SetText("")     // Clear the TTL entry
+				valueDisplay.SetText("") // Clear the display area
+			}
+		}, win)
+	})
+
 	inputForm := container.NewVBox(
 		widget.NewLabel("Add or Update Key-Value"),
 		keyEntry,
@@ -158,7 +197,7 @@ func SetupUI(win fyne.Window) {
 		nil, // No bottom border
 		nil, // No left border
 		nil,
-		container.NewVBox(container.NewHBox(loadBtn, refreshBtn), folderContainer),
+		container.NewVBox(container.NewHBox(loadBtn, refreshBtn, deleteKeyBtn, deleteAllBtn), folderContainer),
 	)
 
 	ui := container.NewBorder(header, inputForm, nil, nil, split)

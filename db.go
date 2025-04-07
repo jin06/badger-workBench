@@ -74,3 +74,9 @@ func GetKeyTTL(key string) (uint64, error) {
 	})
 	return ttl, err
 }
+
+func DeleteKey(key string) error {
+	return DB.Update(func(txn *badger.Txn) error {
+		return txn.Delete([]byte(key))
+	})
+}
