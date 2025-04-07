@@ -25,3 +25,4 @@ go.work.sum
 .env
 last_opened_dir.txt
 __debug*
+bin
