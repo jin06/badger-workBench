@@ -84,8 +84,6 @@ jobs:
   build-linux:
     name: Build Linux Binaries
     runs-on: ubuntu-latest
-    container:
-      image: fyneio/fyne-cross-images:v1.1.4-linux
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
