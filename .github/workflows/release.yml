@@ -68,11 +68,18 @@ jobs:
       with:
         go-version: 1.24
 
+    - name: Install MinGW
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y mingw-w64
+
     - name: Build for Windows (amd64 and 386)
+      env:
+        CC: x86_64-w64-mingw32-gcc
       run: |
         mkdir -p bin
-        CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-windows-amd64.exe .
-        CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o bin/BadgerWorkbench-${{ github.ref_name }}-windows-386.exe .
+        CGO_ENABLED=1 GOOS=windows GOARCH=amd64 CC=x86_64-w64-mingw32-gcc go build -o bin/BadgerWorkbench-${{ github.ref_name }}-windows-amd64.exe .
+        CGO_ENABLED=1 GOOS=windows GOARCH=386 CC=i686-w64-mingw32-gcc go build -o bin/BadgerWorkbench-${{ github.ref_name }}-windows-386.exe .
 
   build-linux:
     name: Build Linux Binaries
