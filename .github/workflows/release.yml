@@ -84,11 +84,8 @@ jobs:
   build-linux:
     name: Build Linux Binaries
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        arch: [amd64, arm64] # Build for both amd64 and arm64
     container:
-      image: ${{ matrix.arch == 'amd64' && 'fyneio/fyne-cross:1.3-linux-386' || 'fyneio/fyne-cross:1.3-linux-arm64' }}
+      image: fyneio/fyne-cross:v1.1.4-linux
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
