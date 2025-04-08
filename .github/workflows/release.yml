@@ -111,8 +111,8 @@ jobs:
         mkdir -p bin
         CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -buildvcs=false -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-amd64 .
 
-  create-release:
-    name: Create Release
+  package-and-upload:
+    name: Package and Upload Release Assets
     runs-on: ubuntu-latest
     needs: [build-macos, build-windows, build-linux]
     permissions:
@@ -120,6 +120,13 @@ jobs:
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
+
+    - name: Compress Binaries
+      run: |
+        mkdir -p release
+        zip -j release/BadgerWorkbench-${{ github.ref_name }}-macos.zip bin/BadgerWorkbench-${{ github.ref_name }}-darwin-*
+        zip -j release/BadgerWorkbench-${{ github.ref_name }}-windows.zip bin/BadgerWorkbench-${{ github.ref_name }}-windows-*
+        zip -j release/BadgerWorkbench-${{ github.ref_name }}-linux.zip bin/BadgerWorkbench-${{ github.ref_name }}-linux-*
 
     - name: Create Release
       id: create_release
@@ -135,12 +142,26 @@ jobs:
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Upload Release Assets
+    - name: Upload macOS Release Asset
       uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: bin/
-        asset_name: ${{ runner.os }}-binaries
+        asset_path: release/BadgerWorkbench-${{ github.ref_name }}-macos.zip
+        asset_name: BadgerWorkbench-${{ github.ref_name }}-macos.zip
+        asset_content_type: application/zip
+
+    - name: Upload Windows Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/BadgerWorkbench-${{ github.ref_name }}-windows.zip
+        asset_name: BadgerWorkbench-${{ github.ref_name }}-windows.zip
+        asset_content_type: application/zip
+
+    - name: Upload Linux Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: release/BadgerWorkbench-${{ github.ref_name }}-linux.zip
+        asset_name: BadgerWorkbench-${{ github.ref_name }}-linux.zip
         asset_content_type: application/zip
