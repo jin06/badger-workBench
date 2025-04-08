@@ -14,7 +14,6 @@ darwin: ## Build for macOS
 	CGO_ENABLED=1 GOOS=darwin GOARCH=arm64 go build -o $(BIN_DIR)/$(APP_NAME)-$(VERSION)-darwin-arm64 $(SRC)
 
 windows: ## Build for Windowt st
-s
 	mkdir -p $(BIN_DIR)
 	CGO_ENABLED=1 GOOS=windows GOARCH=amd64 go build -o $(BIN_DIR)/$(APP_NAME)-$(VERSION)-windows-amd64.exe $(SRC)
 	CGO_ENABLED=1 GOOS=windows GOARCH=386 go build -o $(BIN_DIR)/$(APP_NAME)-$(VERSION)-windows-386.exe $(SRC)

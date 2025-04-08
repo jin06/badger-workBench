@@ -88,10 +88,18 @@ jobs:
     - name: Checkout Code
       uses: actions/checkout@v3
 
-    - name: Install GCC
+    - name: Install Dependencies
       run: |
         sudo apt-get update
-        sudo apt-get install -y gcc
+        sudo apt-get install -y \
+          libgl1-mesa-dev \
+          xorg-dev \
+          libx11-dev \
+          libxcursor-dev \
+          libxrandr-dev \
+          libxi-dev \
+          libxinerama-dev \
+          gcc
 
     - name: Set up Go
       uses: actions/setup-go@v4
