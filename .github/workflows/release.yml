@@ -62,7 +62,7 @@ jobs:
         zip -j release/macos/BadgerWorkbench-${{ github.ref_name }}-darwin-arm64.zip bin/BadgerWorkbench-${{ github.ref_name }}-darwin-arm64
 
     - name: Upload macOS Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: macos-bin
         path: release/macos
@@ -99,7 +99,7 @@ jobs:
         zip -j release/windows/BadgerWorkbench-${{ github.ref_name }}-windows-386.zip bin/BadgerWorkbench-${{ github.ref_name }}-windows-386.exe
 
     - name: Upload Windows Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: windows-bin
         path: release/windows
@@ -140,7 +140,7 @@ jobs:
         zip -j release/linux/BadgerWorkbench-${{ github.ref_name }}-linux-amd64.zip bin/BadgerWorkbench-${{ github.ref_name }}-linux-amd64
 
     - name: Upload Linux Binaries
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: linux-bin
         path: release/linux
