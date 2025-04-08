@@ -110,10 +110,13 @@ jobs:
       run: |
         mkdir -p bin
         CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -buildvcs=false -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-amd64 .
+
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
     needs: [build-macos, build-windows, build-linux]
+    permissions:
+      contents: write # Grant write access to contents for creating a release
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
@@ -134,6 +137,8 @@ jobs:
 
     - name: Upload Release Assets
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: bin/
