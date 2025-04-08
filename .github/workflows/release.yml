@@ -110,12 +110,37 @@ jobs:
       run: |
         mkdir -p bin
         CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -buildvcs=false -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-amd64 .
-        CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -buildvcs=false -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-arm64 .
-
+  build-linux-arm:
+    name: Build Linux Binaries
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+          libgl1-mesa-dev \
+          xorg-dev \
+          libx11-dev \
+          libxcursor-dev \
+          libxrandr-dev \
+          libxi-dev \
+          libxinerama-dev \
+          gcc
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: 1.24
+      - name: Build for Linux
+        run: |
+          mkdir -p bin
+          CGO_ENABLED=1 GOOS=linux GOARCH=arm64 go build -buildvcs=false -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-arm64 .
+      
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: [build-macos, build-windows, build-linux]
+    needs: [build-macos, build-windows, build-linux, build-linux-arm]
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
