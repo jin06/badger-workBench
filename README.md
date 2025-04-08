@@ -22,7 +22,7 @@ Badger Workbench is a graphical user interface (GUI) application built with [Fyn
 2. Download the appropriate binary for your platform:
    - macOS: `BadgerWorkbench-<version>-darwin-amd64` or `BadgerWorkbench-<version>-darwin-arm64`
    - Windows: `BadgerWorkbench-<version>-windows-amd64.exe` or `BadgerWorkbench-<version>-windows-386.exe`
-   - Linux: `BadgerWorkbench-<version>-linux-amd64` or `BadgerWorkbench-<version>-linux-arm64`
+   - Linux: `BadgerWorkbench-<version>-linux-amd64` 
 3. Make the binary executable (if required):
    - On macOS/Linux:
      ```bash
