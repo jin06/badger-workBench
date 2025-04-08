@@ -110,58 +110,10 @@ jobs:
       run: |
         mkdir -p bin
         CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -buildvcs=false -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-amd64 .
-
-  build-linux-arm:
-    name: Build Linux ARM64 Binaries
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Checkout Code
-      uses: actions/checkout@v3
-    - name: Configure Multiarch Sources  # 关键修复步骤
-      run: |
-        sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
-        
-        sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list
-        sudo sed -i 's/deb http/deb [arch=arm64] http/g' /etc/apt/sources.list
-        echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted" | sudo tee -a /etc/apt/sources.list
-        echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted" | sudo tee -a /etc/apt/sources.list
-    - name: Enable Multiarch and Update
-      run: |
-        sudo dpkg --add-architecture arm64
-        sudo apt-get update -o Debug::pkgProblemResolver=yes -qq
-    - name: Install ARM64 Toolchain and Libraries
-      run: |
-        sudo apt-get install -y --no-install-recommends \
-          gcc-aarch64-linux-gnu \
-          g++-aarch64-linux-gnu \ 
-          libgl1-mesa-dev:arm64 \
-          libglu1-mesa-dev:arm64 \
-          libx11-dev:arm64 \
-          libxcursor-dev:arm64 \
-          libxrandr-dev:arm64 \
-          libxi-dev:arm64 \
-          libxinerama-dev:arm64 \
-          libxxf86vm-dev:arm64 \  
-          libasound2-dev:arm64    
-
-    - name: Set up Go
-      uses: actions/setup-go@v4
-      with:
-        go-version: 1.24
-
-    - name: Build for Linux ARM64
-      env:
-        CC: aarch64-linux-gnu-gcc
-        CXX: aarch64-linux-gnu-g++  
-        PKG_CONFIG_PATH: /usr/lib/aarch64-linux-gnu/pkgconfig
-      run: |
-        mkdir -p bin
-        CGO_ENABLED=1 GOOS=linux GOARCH=arm64 CC=aarch64-linux-gnu-gcc go build -buildvcs=false -o bin/BadgerWorkbench-${{ github.ref_name }}-linux-arm64 .
-
   create-release:
     name: Create Release
     runs-on: ubuntu-latest
-    needs: [build-macos, build-windows, build-linux, build-linux-arm]
+    needs: [build-macos, build-windows, build-linux]
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
