@@ -189,6 +189,8 @@ jobs:
 
     - name: Upload macOS AMD64 Release Asset
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: release/macos/BadgerWorkbench-${{ github.ref_name }}-darwin-amd64.zip
@@ -197,6 +199,8 @@ jobs:
 
     - name: Upload macOS ARM64 Release Asset
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: release/macos/BadgerWorkbench-${{ github.ref_name }}-darwin-arm64.zip
@@ -205,6 +209,8 @@ jobs:
 
     - name: Upload Windows AMD64 Release Asset
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: release/windows/BadgerWorkbench-${{ github.ref_name }}-windows-amd64.zip
@@ -213,6 +219,8 @@ jobs:
 
     - name: Upload Windows 386 Release Asset
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: release/windows/BadgerWorkbench-${{ github.ref_name }}-windows-386.zip
@@ -221,6 +229,8 @@ jobs:
 
     - name: Upload Linux AMD64 Release Asset
       uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
         asset_path: release/linux/BadgerWorkbench-${{ github.ref_name }}-linux-amd64.zip
