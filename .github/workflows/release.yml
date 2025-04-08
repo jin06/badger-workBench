@@ -113,16 +113,22 @@ jobs:
 
   build-linux-arm:
     name: Build Linux ARM64 Binaries
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
     - name: Checkout Code
       uses: actions/checkout@v3
-
-    - name: Enable Multiarch and Update Repositories
+    - name: Configure Multiarch Sources  # 关键修复步骤
+      run: |
+        sudo cp /etc/apt/sources.list /etc/apt/sources.list.bak
+        
+        sudo sed -i 's/deb http/deb [arch=amd64] http/g' /etc/apt/sources.list
+        sudo sed -i 's/deb http/deb [arch=arm64] http/g' /etc/apt/sources.list
+        echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy main restricted" | sudo tee -a /etc/apt/sources.list
+        echo "deb [arch=arm64] http://ports.ubuntu.com/ubuntu-ports jammy-updates main restricted" | sudo tee -a /etc/apt/sources.list
+    - name: Enable Multiarch and Update
       run: |
         sudo dpkg --add-architecture arm64
-        sudo apt-get update -qq
-
+        sudo apt-get update -o Debug::pkgProblemResolver=yes -qq
     - name: Install ARM64 Toolchain and Libraries
       run: |
         sudo apt-get install -y --no-install-recommends \
